@@ -1,38 +1,60 @@
 language: c
 sudo: false
-
 git:
-  submodules: false  # whether to recursively clone submodules
-
+  submodules: false
 cache:
   directories:
-    - $HOME/.cabal/packages
-    - $HOME/.mafia
-
+  - $HOME/.cabal/packages
+  - $HOME/.mafia
 before_cache:
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/build-reports.log
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/00-index.*
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/*.json
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.cache
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.tar
-  - rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.tar.idx
-
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/build-reports.log
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/00-index.*
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/*.json
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.cache
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.tar
+- rm -fv $HOME/.cabal/packages/hackage.haskell.org/01-index.tar.idx
 matrix:
   include:
-    - compiler: "ghc-8.0.1"
-      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-1.24,ghc-8.0.1], sources: [hvr-ghc]}}
-    - compiler: "ghc-8.0.2"
-      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-1.24,ghc-8.0.2], sources: [hvr-ghc]}}
-    - compiler: "ghc-8.2.1"
-      addons: {apt: {packages: [ghc-ppa-tools,cabal-install-1.24,ghc-8.0.2], sources: [hvr-ghc]}}
-
+  - compiler: ghc-8.0.1
+    addons:
+      apt:
+        packages:
+        - ghc-ppa-tools
+        - cabal-install-1.24
+        - ghc-8.0.1
+        sources:
+        - hvr-ghc
+  - compiler: ghc-8.0.2
+    addons:
+      apt:
+        packages:
+        - ghc-ppa-tools
+        - cabal-install-1.24
+        - ghc-8.0.2
+        sources:
+        - hvr-ghc
+  - compiler: ghc-8.2.1
+    addons:
+      apt:
+        packages:
+        - ghc-ppa-tools
+        - cabal-install-1.24
+        - ghc-8.0.2
+        sources:
+        - hvr-ghc
 before_install:
- - unset CC
- - PATH=/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$PATH
-
+- unset CC
+- PATH=/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$PATH
 install:
- - travis_retry cabal update -v
- - bin/travis_install
-
+- travis_retry cabal update -v
+- bin/travis_install
 script:
- - bin/travis_script
+- bin/travis_script
+deploy:
+  provider: hackage
+  username: TimHumphries
+  password:
+    secure: RxoTwkRpg6hMTEcOVM5QlyxRPOge+epmo7h0hloqvIhYf9Ld6aZM2hqYRCxwLDsNm1EISYNFiUx170OPvzrNTeDW/DknI/tr98rN+jyS4f3iAv8P2OYy+QpipcKSwwrx5n/oQavXtumZdgAO44x/LSJf5PkYaWuZ6ogSgSzm9rPGbWUjrjGaJkRf3bFXWDbaMHVt6mhn3YMT4cIm1k0uwqnkC0ptvEyAtxKfjbvDWajil7Szg5gGhaGKXOJtmdXDF3w8FZvi3DDVmuPHlanTlimX2sOk+8TBYLuuAN/3sgHSeH+A6+wUMcluFu/A1inIK+oobWh0+X1+eBEi+j+rumdLby5Gf5gMexxXzR9izE88EqSoAxK9O3WDrumOgfjVKbjAtGGys5LSvFkixOdwiACd2Aol4FGF4J6hltvJ4m3QfzlgYMdgad1Z5zNlZIFa4RVqTacBfssJ7w/UDTEiQOw/Ku60n2mQDkms06+lFAQDF6zRmMd0XwkdFPDE7bBMJeY1sQz76lks2SU0OMWVjU3moq/L9LW2akcEP23LsmRqKYJ6sjWXQn6cAIOBE/fbhQFHaiR4plnvDzIdnP/oGULFfsdjOlREJUQcWOEhtKfIelqdr++7HqH9PMMXXeW5CCSXOQ/m2uFlvmsCsyUY3/GZV+DPzBP2KCbcVO/kZmI=
+  on:
+    repo: thumphries/hgrep
+    tags: true
